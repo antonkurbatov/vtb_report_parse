@@ -8,7 +8,7 @@ import collections
 
 from lxml import etree
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 
 class ParseError(Exception):

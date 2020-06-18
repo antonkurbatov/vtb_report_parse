@@ -12,8 +12,9 @@ can be downloaded at https://www.olb.ru
 Install python and python pip tool.
 
 ```
-cd <cloned dir>
-pip install -e ./
+$ git clone https://github.com/antonkurbatov/vtb_report_parse.git
+$ cd vtb_report_parse
+$ pip install -e ./
 ```
 
 ## Usage

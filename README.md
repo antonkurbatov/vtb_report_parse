@@ -2,8 +2,8 @@
 
 ----
 
-VTB report parser provides an ability to parse VTB broker XML report
-that can be downloaded from https://www.olb.ru
+The VTB report parser provides support for parcing a VTB broker XML report that
+can be downloaded at https://www.olb.ru
 
 ----
 

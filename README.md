@@ -23,7 +23,7 @@ Save it to GetBrokerReport.xml.
 
 ```
 $ vtb_report_parse -f ~/reports/GetBrokerReport.xml
-Processing the report: /root/stocks/GetBrokerReport.xml ...
+Processing the report: /home/user/reports/GetBrokerReport.xml ...
 [Period] 2019-06-01 - 2020-06-17 (382 days)
 [USD price] 69.7524
 ---- Cash Flow ----

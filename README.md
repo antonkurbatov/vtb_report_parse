@@ -19,7 +19,7 @@ $ pip install -e ./
 
 ## Usage
 
-Download a VTB broker report from https://www.olb.ru using your account.
+Download a VTB broker report at https://www.olb.ru using your account.
 Save it to GetBrokerReport.xml.
 
 ```

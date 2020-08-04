@@ -30,7 +30,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --verbose, -v         verbose logging
   --report <report-file.xml>
-                        A VTB broker report file.This option can be used
+                        A VTB broker report file. This option can be used
                         multiple times to merge reports together.
   --usd-price <usd-price>
                         USD value in ₽. If not specified the value is gotten

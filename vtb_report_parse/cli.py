@@ -37,7 +37,7 @@ def parse_args():
                         dest='reports',
                         action='append',
                         required=True,
-                        help='A VTB broker report file.This option can be '
+                        help='A VTB broker report file. This option can be '
                              'used multiple times to merge reports together.')
     parser.add_argument('--usd-price',
                         metavar='<usd-price>',

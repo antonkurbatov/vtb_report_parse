@@ -23,7 +23,7 @@ Download a VTB broker report at https://www.olb.ru using your account.
 Save it to GetBrokerReport.xml.
 
 ```
-usage: vtb-report-parse [-h] [--verbose] [--report <report-file.xml>]
+usage: vtb-report-parse [-h] [--verbose] --report <report-file.xml>
                         [--usd-price <usd-price>]
 
 optional arguments:

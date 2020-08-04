@@ -36,6 +36,7 @@ def parse_args():
                         metavar='<report-file.xml>',
                         dest='reports',
                         action='append',
+                        required=True,
                         help='A VTB broker report file.This option can be '
                              'used multiple times to merge reports together.')
     parser.add_argument('--usd-price',
@@ -57,9 +58,6 @@ def main():
 
     LOG.setLevel(logging_map.get(parsed_args.verbose, logging.DEBUG))
     logging.basicConfig(format='%(message)s')
-
-    if not parsed_args.reports:
-        parsed_args.reports = ['GetBrokerReport.xml']
 
     LOG.info('Processing the report(s):\n- %s', '\n- '.join(parsed_args.reports))
     report = vtb_report.VTBReport(parsed_args.reports)

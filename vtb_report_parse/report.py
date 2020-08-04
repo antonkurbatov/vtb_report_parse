@@ -129,8 +129,7 @@ class VTBReportParser(object):
         if self._usd_price is None:
             item = self._root.find('.//*/[@CurrEnd]')
             if item is None:
-                LOG.warning("Cannot find element with 'CurrEnd' attr. "
-                            "USD price will be set to 0.")
+                LOG.warning("Cannot find element with 'CurrEnd' attr.")
                 self._usd_price = 0
             else:
                 self._usd_price = float(item.attrib['CurrEnd'])

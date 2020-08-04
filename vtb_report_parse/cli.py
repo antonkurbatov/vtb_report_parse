@@ -32,14 +32,17 @@ def parse_args():
     parser.add_argument('--verbose', '-v',
                         action='count',
                         help='verbose logging')
-    parser.add_argument('--file', '-f',
-                        default='GetBrokerReport.xml',
-                        help='broker report file, default: '
-                             'GetBrokerReport.xml')
+    parser.add_argument('--report',
+                        metavar='<report-file.xml>',
+                        dest='reports',
+                        action='append',
+                        help='A VTB broker report file.This option can be '
+                             'used multiple times to merge reports together.')
     parser.add_argument('--usd-price',
-                        help='USD value in Rubles. If not specified the '
-                             'value is gottem form the report')
-
+                        metavar='<usd-price>',
+                        type=float,
+                        help='USD value in ₽. If not specified the '
+                             'value is gotten form the report.')
     return parser.parse_args()
 
 
@@ -55,8 +58,11 @@ def main():
     LOG.setLevel(logging_map.get(parsed_args.verbose, logging.DEBUG))
     logging.basicConfig(format='%(message)s')
 
-    LOG.info('Processing the report: %s ...', parsed_args.file)
-    report = vtb_report.VTBReport(parsed_args.file)
+    if not parsed_args.reports:
+        parsed_args.reports = ['GetBrokerReport.xml']
+
+    LOG.info('Processing the report(s):\n- %s', '\n- '.join(parsed_args.reports))
+    report = vtb_report.VTBReport(parsed_args.reports)
 
     start_date, end_date = report.report_date
     usd_price = parsed_args.usd_price or report.usd_price
@@ -67,20 +73,23 @@ def main():
     usd_price = parsed_args.usd_price or report.usd_price
     LOG.info("[USD price] %s", usd_price)
 
+    def output_dump(tag, operation_types=None):
+        dump_cash_flow(report, tag, operation_types)
+
     LOG.info('---- Cash Flow ----')
-    dump_cash_flow(report, 'Fees', OperationType.fees)
-    dump_cash_flow(report, 'Taxes', OperationType.taxes)
-    dump_cash_flow(report, 'Dividends', OperationType.dividends)
-    dump_cash_flow(report, 'Coupons', OperationType.coupons)
-    dump_cash_flow(report, 'Credit payments', OperationType.credit_payments)
-    dump_cash_flow(report, 'Write offs', OperationType.write_offs)
-    dump_cash_flow(report, 'Exhange saldo', OperationType.exhange_saldo)
-    dump_cash_flow(report, 'Securities saldo', OperationType.securities_saldo)
+    output_dump('Fees', OperationType.fees)
+    output_dump('Taxes', OperationType.taxes)
+    output_dump('Dividends', OperationType.dividends)
+    output_dump('Coupons', OperationType.coupons)
+    output_dump('Credit payments', OperationType.credit_payments)
+    output_dump('Write offs', OperationType.write_offs)
+    output_dump('Exhange saldo', OperationType.exhange_saldo)
+    output_dump('Securities saldo', OperationType.securities_saldo)
 
     LOG.info('---- Summary ----')
-    dump_cash_flow(report, 'Credit payments with write offs',
-                   [OperationType.credit_payments, OperationType.write_offs])
-    dump_cash_flow(report, 'Total')
+    output_dump('Credit payments with write offs',
+                [OperationType.credit_payments, OperationType.write_offs])
+    output_dump('Total')
 
 
 if __name__ == '__main__':

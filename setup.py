@@ -17,7 +17,7 @@ setuptools.setup(
 
     entry_points={
         'console_scripts': [
-            'vtb_report_parse = vtb_report_parse.cli:main'
+            'vtb-report-parse = vtb_report_parse.cli:main'
         ],
     }
 )

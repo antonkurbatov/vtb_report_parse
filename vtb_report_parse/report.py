@@ -54,18 +54,22 @@ class CashFlow(object):
     def add(self, operation):
         self._values.append(operation)
 
-    def merge(self, other):
-        self_op_by_date = collections.defaultdict(list)
-        other_op_by_date = collections.defaultdict(list)
-        for val in self:
-            self_op_by_date[val.date].append(val)
-        for val in other:
-            other_op_by_date[val.date].append(val)
-
-        new_dates = set(other_op_by_date.keys()) - set(self_op_by_date.keys())
-        for date in new_dates:
-            for val in other_op_by_date[date]:
+    def merge(self, other, union=False):
+        if union:
+            for val in other:
                 self.add(val)
+        else:
+            self_op_by_date = collections.defaultdict(list)
+            other_op_by_date = collections.defaultdict(list)
+            for val in self:
+                self_op_by_date[val.date].append(val)
+            for val in other:
+                other_op_by_date[val.date].append(val)
+
+            new_dates = set(other_op_by_date.keys()) - set(self_op_by_date.keys())
+            for date in new_dates:
+                for val in other_op_by_date[date]:
+                    self.add(val)
 
     def filter_by_type(self, operation_types):
         if not isinstance(operation_types, (list, tuple)):
@@ -93,6 +97,7 @@ class VTBReportParser(object):
         self._report_date = None
         self._usd_price = None
         self._cash_flow = None
+        self._client_code = None
 
     @property
     def report_date(self):
@@ -179,6 +184,15 @@ class VTBReportParser(object):
 
         return self._cash_flow
 
+    @property
+    def client_code(self):
+        if not self._client_code:
+            item = self._root.find('.//*/[@client_code1]')
+            if item is None:
+                raise ElementWithAttrNotFound('client_code1')
+            self._client_code = item.attrib['client_code1']
+        return self._client_code
+
 
 class VTBReport(object):
     def __init__(self, report_files):
@@ -190,14 +204,17 @@ class VTBReport(object):
         self._sdate = None
         self._edate = None
         self._cash_flow = CashFlow()
+        client_code = parsers[0].client_code
         for parser in parsers:
             if not self._sdate or self._sdate > parser.report_date[0]:
                 self._sdate = parser.report_date[0]
             if not self._edate or self._edate < parser.report_date[1]:
                 self._edate = parser.report_date[1]
-                self._usd_price = parser.usd_price
+                if parser.usd_price:
+                    self._usd_price = parser.usd_price
 
-            self._cash_flow.merge(parser.cash_flow)
+            union = parser.client_code != parsers[0].client_code
+            self._cash_flow.merge(parser.cash_flow, union=union)
 
     @property
     def report_date(self):
